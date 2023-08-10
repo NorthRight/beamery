@@ -1,3 +1,7 @@
+  -- % of candidates who passed the screening phase of the application process
+  -- % of candidates who received an offer
+  -- entered_offer_date
+
 SELECT
   vs.candidate_id,
   vs.company_id,
@@ -20,18 +24,14 @@ SELECT
   dc.contact_created_date,
   dc.contact_updated_date,
   dc.contact_completeness_level,
-  CASE
-    WHEN COALESCE(entered_applied_date,entered_review_date, entered_screen_date, entered_interview_date, entered_offer_date, entered_post_offer_date, entered_hired_date) IS NOT NULL THEN 1
-  ELSE
-  0
-END
-  AS candidate_passed_screening,
-  CASE
-    WHEN COALESCE(entered_offer_date, entered_post_offer_date, entered_hired_date) IS NOT NULL THEN 1
-  ELSE
-  0
-END
-  AS candidate_received_offer
+  CASE 
+    WHEN COALESCE( entered_interview_date, entered_offer_date, entered_post_offer_date, entered_hired_date) IS NOT NULL THEN 1 ELSE 0
+  END AS candidate_passed_screening,
+
+    CASE 
+    WHEN COALESCE(entered_offer_date, entered_post_offer_date, entered_hired_date) IS NOT NULL THEN 1 ELSE 0
+  END AS candidate_received_offer
+
 FROM
   `stately-equinox-394719.Beamery.vacancy-stages` AS vs
 INNER JOIN
@@ -39,4 +39,5 @@ INNER JOIN
 ON
   dc.contact_id = vs.candidate_id
 WHERE
-  vacancy_closed_date > vacancy_opened_date
+vacancy_closed_date > vacancy_opened_date
+ 
